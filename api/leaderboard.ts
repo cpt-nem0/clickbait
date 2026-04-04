@@ -2,9 +2,11 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { Pool } from "pg";
 
 // --- DB ---
+const connectionString = process.env.POSTGRES_URL + (
+  process.env.POSTGRES_URL?.includes("sslmode") ? "" : "?sslmode=no-verify"
+);
 const pool = new Pool({
-  connectionString: process.env.POSTGRES_URL,
-  ssl: { rejectUnauthorized: false },
+  connectionString,
   max: 5,
 });
 
