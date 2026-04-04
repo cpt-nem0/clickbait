@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { getTopScores, insertScore } from "./lib/db.js";
-import { validateDifficulty, validateSubmission } from "./lib/validate.js";
+import { getTopScores, insertScore } from "./lib/db";
+import { validateDifficulty, validateSubmission } from "./lib/validate";
 
 // Simple in-memory rate limit (per serverless instance — not perfect, but adds friction)
 const recentPosts = new Map<string, number>();
