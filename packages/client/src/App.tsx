@@ -30,9 +30,16 @@ function setHighScore(difficulty: Difficulty, score: number) {
   }
 }
 
+function getInitialScreen(): { screen: Screen; view: "arcade" | "leaderboard" } {
+  const hash = window.location.hash.replace("#", "");
+  if (hash === "leaderboard") return { screen: "leaderboard", view: "leaderboard" };
+  return { screen: "difficulty", view: "arcade" };
+}
+
 export default function App() {
-  const [screen, setScreen] = useState<Screen>("difficulty");
-  const [currentView, setCurrentView] = useState<"arcade" | "leaderboard">("arcade");
+  const initial = getInitialScreen();
+  const [screen, setScreen] = useState<Screen>(initial.screen);
+  const [currentView, setCurrentView] = useState<"arcade" | "leaderboard">(initial.view);
   const [difficulty, setDifficulty] = useState<Difficulty>("easy");
   const [gameResult, setGameResult] = useState<GameResult | null>(null);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
@@ -60,6 +67,14 @@ export default function App() {
   useEffect(() => {
     fetchLeaderboard(leaderboardFilter === "all" ? undefined : leaderboardFilter);
   }, [leaderboardFilter, leaderboardRefresh, fetchLeaderboard]);
+
+  // Sync URL hash with screen
+  useEffect(() => {
+    const hash = screen === "leaderboard" ? "#leaderboard" : "#arcade";
+    if (window.location.hash !== hash) {
+      window.history.replaceState(null, "", hash);
+    }
+  }, [screen]);
 
   useEffect(() => {
     setHighScoreState(getHighScore(difficulty));

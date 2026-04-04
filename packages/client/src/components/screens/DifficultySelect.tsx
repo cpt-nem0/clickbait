@@ -42,7 +42,10 @@ export default function DifficultySelect({ onSelect, leaderboard, currentUsernam
         </div>
 
         <button
-          onClick={() => onSelect("easy")}
+          onClick={() => {
+            const modes: Difficulty[] = ["easy", "medium", "hard", "impossible"];
+            onSelect(modes[Math.floor(Math.random() * modes.length)]);
+          }}
           className="btn-primary w-full text-center text-lg py-4"
         >
           START_GAME_HYPAA
