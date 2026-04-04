@@ -11,6 +11,13 @@ import GameScreen from "@/components/game/GameScreen";
 import GameOver from "@/components/screens/GameOver";
 import HallOfFame from "@/components/screens/HallOfFame";
 import RegisterModal from "@/components/screens/RegisterModal";
+import MobileBlock from "@/components/screens/MobileBlock";
+
+function isMobile(): boolean {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent
+  ) || (window.innerWidth < 768 && "ontouchstart" in window);
+}
 
 type Screen = "difficulty" | "playing" | "gameOver" | "leaderboard";
 
@@ -228,6 +235,10 @@ export default function App() {
         );
     }
   };
+
+  // if (isMobile()) {
+  //   return <MobileBlock />;
+  // }
 
   if (showRegister) {
     return (
