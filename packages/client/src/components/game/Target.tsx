@@ -1,41 +1,37 @@
 import { TARGET_SIZE } from "@/lib/difficulty";
 import { Difficulty } from "@/types";
+import { TargetSkin } from "@/lib/skins";
 
 interface TargetProps {
   x: number;
   y: number;
   difficulty: Difficulty;
+  skin: TargetSkin;
   onClick: (e: React.MouseEvent) => void;
 }
 
-const targetStyle: Record<Difficulty, { bg: string; glow: string }> = {
-  easy: { bg: "bg-primary-container", glow: "neon-glow-yellow" },
-  medium: { bg: "bg-primary-container", glow: "neon-glow-yellow" },
-  hard: { bg: "bg-error", glow: "neon-glow-pink" },
-  impossible: { bg: "bg-secondary", glow: "neon-glow-pink" },
-};
-
-export default function Target({ x, y, difficulty, onClick }: TargetProps) {
+export default function Target({ x, y, difficulty, skin, onClick }: TargetProps) {
   return (
     <button
       onClick={onClick}
-      className="absolute animate-elastic-in cursor-pointer select-none"
+      className="absolute animate-elastic-in select-none"
       style={{
         left: x - TARGET_SIZE / 2,
         top: y - TARGET_SIZE / 2,
         width: TARGET_SIZE,
         height: TARGET_SIZE,
         willChange: "transform",
+        cursor: "url('/cursor.svg') 1 1, pointer",
       }}
     >
-      <div className={`w-full h-full ${targetStyle[difficulty].bg} hard-shadow flex flex-col items-center justify-center relative ${targetStyle[difficulty].glow} hover:scale-105 transition-transform duration-75`}>
-        <span className="font-display text-lg font-bold text-black uppercase leading-none">
+      <div className={`w-full h-full ${skin.cssClass} flex flex-col items-center justify-center relative`}>
+        <span className={`font-display text-lg font-bold ${skin.text} uppercase leading-none relative z-10`}>
           CLICK
         </span>
-        <span className="font-display text-2xl font-bold text-black uppercase leading-none">
+        <span className={`font-display text-2xl font-bold ${skin.text} uppercase leading-none relative z-10`}>
           ME!
         </span>
-        <span className="absolute bottom-1 font-display text-[9px] font-bold text-black/40 uppercase">
+        <span className={`absolute bottom-1 font-display text-[9px] font-bold ${skin.text} opacity-40 uppercase z-10`}>
           {difficulty}
         </span>
       </div>

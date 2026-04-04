@@ -1,16 +1,21 @@
 import { Difficulty, LeaderboardEntry } from "@/types";
 import { DIFFICULTIES } from "@/lib/difficulty";
+import { TargetSkin } from "@/lib/skins";
 import DifficultyCard from "@/components/shared/DifficultyCard";
 import GlobalRankings from "@/components/shared/GlobalRankings";
 import PromoCard from "@/components/shared/PromoCard";
+import SkinSelector from "@/components/shared/SkinSelector";
 
 interface DifficultySelectProps {
   onSelect: (difficulty: Difficulty) => void;
   leaderboard: LeaderboardEntry[];
   currentUsername?: string;
+  highScore: number;
+  activeSkin: TargetSkin;
+  onSkinSelect: (skin: TargetSkin) => void;
 }
 
-export default function DifficultySelect({ onSelect, leaderboard, currentUsername }: DifficultySelectProps) {
+export default function DifficultySelect({ onSelect, leaderboard, currentUsername, highScore, activeSkin, onSkinSelect }: DifficultySelectProps) {
   return (
     <div className="flex flex-1 overflow-auto">
       <div className="flex-1 p-8">
@@ -53,6 +58,7 @@ export default function DifficultySelect({ onSelect, leaderboard, currentUsernam
       </div>
 
       <div className="w-72 p-4 space-y-4 border-l-[3px] border-outline-variant">
+        <SkinSelector highScore={highScore} activeSkin={activeSkin} onSelect={onSkinSelect} />
         <GlobalRankings entries={leaderboard} currentUsername={currentUsername} />
         <PromoCard />
       </div>

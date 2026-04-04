@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import { Difficulty, LeaderboardEntry } from "@/types";
 import { getLeaderboard, submitScore } from "@/lib/api";
 import { stopMusic } from "@/lib/audio";
+import { getSelectedSkin, setSelectedSkin, getSkinById, TargetSkin } from "@/lib/skins";
 import NavBar from "@/components/layout/NavBar";
 import Sidebar from "@/components/layout/Sidebar";
 import Footer from "@/components/layout/Footer";
@@ -60,6 +61,7 @@ export default function App() {
   );
   const [highScore, setHighScoreState] = useState(0);
   const [gameHighScore, setGameHighScore] = useState(0);
+  const [activeSkin, setActiveSkin] = useState<TargetSkin>(() => getSkinById(getSelectedSkin()));
   const [gameKey, setGameKey] = useState(0);
   const [leaderboardRefresh, setLeaderboardRefresh] = useState(0);
 
@@ -181,6 +183,12 @@ export default function App() {
             onSelect={handleSelectDifficulty}
             leaderboard={leaderboard}
             currentUsername={username}
+            highScore={highScore}
+            activeSkin={activeSkin}
+            onSkinSelect={(skin) => {
+              setActiveSkin(skin);
+              setSelectedSkin(skin.id);
+            }}
           />
         );
       case "playing":
@@ -189,6 +197,7 @@ export default function App() {
             key={gameKey}
             difficulty={difficulty}
             highScore={gameHighScore}
+            skin={activeSkin}
             onGameOver={handleGameOver}
             onBack={handleChangeDifficulty}
           />

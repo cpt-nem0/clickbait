@@ -5,6 +5,7 @@ import { useMousePosition } from "@/hooks/useMousePosition";
 import { shouldEvade, getEvasionPosition } from "@/lib/target-logic";
 import { DIFFICULTIES } from "@/lib/difficulty";
 import { sfx } from "@/lib/audio";
+import { TargetSkin } from "@/lib/skins";
 import HUD from "./HUD";
 import Target from "./Target";
 import StickerOverlay from "./StickerOverlay";
@@ -12,11 +13,12 @@ import StickerOverlay from "./StickerOverlay";
 interface GameScreenProps {
   difficulty: Difficulty;
   highScore: number;
+  skin: TargetSkin;
   onGameOver: (stats: { score: number; avgReactionTime: number; accuracy: number }) => void;
   onBack: () => void;
 }
 
-export default function GameScreen({ difficulty, highScore, onGameOver, onBack }: GameScreenProps) {
+export default function GameScreen({ difficulty, highScore, skin, onGameOver, onBack }: GameScreenProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerSize, setContainerSize] = useState({ width: 800, height: 500 });
   const mousePos = useMousePosition(containerRef);
@@ -133,6 +135,7 @@ export default function GameScreen({ difficulty, highScore, onGameOver, onBack }
             x={target.x}
             y={target.y}
             difficulty={difficulty}
+            skin={skin}
             onClick={onTargetClick}
           />
         )}

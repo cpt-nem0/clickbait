@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="28" viewBox="0 0 24 28">
+  <!-- Pink glitch shadow offset -->
+  <polygon points="4,2 4,20 8,16.5 11.5,24 14,22.5 10.5,15 17,15" fill="#ff51fa" opacity="0.6"/>
+  <!-- Main neon green arrow -->
+  <polygon points="1,0 1,19 5.5,15 9,23 12,21.5 8.5,13.5 15,13.5" fill="#cafd00" stroke="#0e0e12" stroke-width="1.5" stroke-linejoin="miter"/>
+</svg>

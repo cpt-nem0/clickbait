@@ -11,6 +11,11 @@
     @apply bg-surface text-on-surface font-body;
     margin: 0;
     min-height: 100vh;
+    cursor: url('/cursor.svg') 1 1, auto;
+  }
+
+  a, button, [role="button"] {
+    cursor: url('/cursor.svg') 1 1, pointer;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -103,6 +108,139 @@
 
   .hard-shadow-sm {
     box-shadow: 2px 2px 0px 0px #000000;
+  }
+
+  /* === SKIN: CLASSIC — square, subtle bounce === */
+  .skin-classic {
+    background: #cafd00;
+    box-shadow: 4px 4px 0 #000;
+    animation: classic-bounce 2s ease-in-out infinite;
+  }
+
+  /* === SKIN: NEON — double outline, orbiting border === */
+  .skin-neon {
+    background: transparent;
+    border: 3px solid #cafd00;
+    box-shadow: 0 0 15px rgba(202,253,0,0.3), inset 0 0 15px rgba(202,253,0,0.1);
+    position: relative;
+    overflow: visible;
+  }
+  .skin-neon::before {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border: 2px dashed #cafd00;
+    opacity: 0.5;
+    animation: neon-orbit 3s linear infinite;
+  }
+
+  /* === SKIN: FIRE — jagged flame edges, shaking === */
+  .skin-fire {
+    background: #ff7351;
+    clip-path: polygon(
+      0% 10%, 5% 0%, 15% 8%, 25% 0%, 35% 5%, 45% 0%, 55% 8%, 65% 0%, 75% 5%, 85% 0%, 95% 8%, 100% 0%,
+      100% 90%, 95% 100%, 85% 92%, 75% 100%, 65% 95%, 55% 100%, 45% 92%, 35% 100%, 25% 95%, 15% 100%, 5% 92%, 0% 100%
+    );
+    box-shadow: 4px 4px 0 #000;
+    animation: fire-wobble 0.12s ease-in-out infinite alternate;
+    position: relative;
+  }
+  .skin-fire::after {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    background: radial-gradient(circle, rgba(255,200,0,0.4) 0%, transparent 70%);
+    animation: fire-glow 0.5s ease-in-out infinite alternate;
+    z-index: -1;
+  }
+
+  /* === SKIN: HOLOGRAPHIC — diamond shape, spinning rainbow === */
+  .skin-holo-diamond {
+    background: linear-gradient(135deg, #cafd00, #00ffff, #ff51fa, #cafd00);
+    background-size: 300% 300%;
+    animation: holo-shift 2s ease infinite;
+    transform: rotate(45deg) scale(0.75);
+    box-shadow: 4px 4px 0 #000;
+    position: relative;
+    overflow: hidden;
+  }
+  .skin-holo-diamond > * {
+    transform: rotate(-45deg);
+  }
+  .skin-holo-diamond::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      120deg,
+      transparent 30%,
+      rgba(255,255,255,0.5) 50%,
+      transparent 70%
+    );
+    background-size: 200% 200%;
+    animation: holo-shine 1.5s ease-in-out infinite;
+  }
+
+  /* === SKIN: VOID — circle, pulsing black hole === */
+  .skin-void {
+    background: #000;
+    border: 3px solid #ff51fa;
+    border-radius: 50% !important;
+    box-shadow: 0 0 20px rgba(255,81,250,0.3), inset 0 0 20px rgba(255,81,250,0.15);
+    animation: void-pulse 3s ease-in-out infinite;
+    position: relative;
+    overflow: visible;
+  }
+  .skin-void::before {
+    content: "";
+    position: absolute;
+    inset: -8px;
+    border: 1px solid rgba(255,81,250,0.3);
+    border-radius: 50% !important;
+    animation: void-ring 2s ease-in-out infinite;
+  }
+  .skin-void::after {
+    content: "";
+    position: absolute;
+    inset: -16px;
+    border: 1px solid rgba(255,81,250,0.15);
+    border-radius: 50% !important;
+    animation: void-ring 2s ease-in-out infinite 0.5s;
+  }
+
+  /* === SKIN: GLITCH — broken reality === */
+  .skin-glitch {
+    background: #cafd00;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 4px 4px 0 #000;
+    animation: glitch-main 3s steps(1) infinite;
+  }
+  /* Cyan RGB ghost — offset left */
+  .skin-glitch::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: #00ffff;
+    mix-blend-mode: multiply;
+    opacity: 0;
+    animation: glitch-cyan 3s steps(1) infinite;
+    z-index: 1;
+    pointer-events: none;
+  }
+  /* Horizontal tear / scanline slice */
+  .skin-glitch::after {
+    content: "";
+    position: absolute;
+    left: -5%;
+    width: 110%;
+    height: 30%;
+    background: #ff51fa;
+    mix-blend-mode: difference;
+    opacity: 0;
+    animation: glitch-tear 3s steps(1) infinite;
+    z-index: 2;
+    pointer-events: none;
   }
 
   .glass-panel {
@@ -200,4 +338,85 @@
 
 .ticker-track:hover {
   animation-play-state: paused;
+}
+
+/* === Skin keyframes === */
+
+@keyframes classic-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+@keyframes neon-orbit {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes fire-wobble {
+  0% { transform: translate(0, 0) rotate(-0.5deg); }
+  100% { transform: translate(1px, -1px) rotate(0.5deg); }
+}
+
+@keyframes fire-glow {
+  0% { opacity: 0.5; transform: scale(1); }
+  100% { opacity: 1; transform: scale(1.15); }
+}
+
+@keyframes holo-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes holo-shine {
+  0% { background-position: -100% -100%; }
+  100% { background-position: 200% 200%; }
+}
+
+@keyframes void-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(255,81,250,0.3), inset 0 0 20px rgba(255,81,250,0.15);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(255,81,250,0.6), inset 0 0 35px rgba(255,81,250,0.3);
+    transform: scale(1.03);
+  }
+}
+
+@keyframes void-ring {
+  0%, 100% { transform: scale(1); opacity: 0.3; }
+  50% { transform: scale(1.15); opacity: 0; }
+}
+
+/* Glitch: main body snaps position + skews briefly */
+@keyframes glitch-main {
+  0%, 89% { transform: translate(0, 0) skewX(0deg); }
+  90% { transform: translate(-4px, 2px) skewX(-2deg); }
+  92% { transform: translate(3px, -1px) skewX(3deg); }
+  94% { transform: translate(-2px, 0) skewX(-1deg); }
+  95% { transform: translate(5px, 1px) skewX(2deg); }
+  96% { transform: translate(0, -3px) skewX(0deg); }
+  97% { transform: translate(-3px, 2px) skewX(-4deg); }
+  98% { transform: translate(2px, 0) skewX(1deg); }
+  100% { transform: translate(0, 0) skewX(0deg); }
+}
+
+/* Glitch: cyan ghost flashes */
+@keyframes glitch-cyan {
+  0%, 89%, 96%, 100% { opacity: 0; transform: translate(0, 0); }
+  90% { opacity: 0.7; transform: translate(-5px, 0); }
+  92% { opacity: 0; transform: translate(0, 0); }
+  93% { opacity: 0.5; transform: translate(4px, 0); }
+  95% { opacity: 0; transform: translate(0, 0); }
+}
+
+/* Glitch: pink horizontal tear slices across */
+@keyframes glitch-tear {
+  0%, 88%, 97%, 100% { opacity: 0; top: 50%; }
+  89% { opacity: 0.8; top: 20%; height: 15%; }
+  91% { opacity: 0; top: 20%; }
+  93% { opacity: 0.6; top: 60%; height: 25%; }
+  95% { opacity: 0.9; top: 10%; height: 10%; }
+  96% { opacity: 0; top: 10%; }
 }
