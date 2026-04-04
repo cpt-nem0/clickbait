@@ -6,7 +6,7 @@ export default function PromoCard() {
         WIN REAL CREDITS
       </h3>
       <p className="font-body text-xs text-on-surface-variant">
-        Top the leaderboard each week. Bragging rights included.
+        Top the leaderboard each week. Bragging rights included.<span className="text-primary-container font-bold">*</span>
       </p>
     </div>
   );

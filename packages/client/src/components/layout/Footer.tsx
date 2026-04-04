@@ -29,6 +29,7 @@ const TICKER_ITEMS = [
   "0.00% OF PLAYERS HAVE BEATEN THE DEVELOPER'S HIGH SCORE. IT'S RIGGED. (IT'S NOT.)",
   "A JIFFY IS AN ACTUAL UNIT OF TIME: 1/100TH OF A SECOND. YOUR REACTION TIME IS MANY JIFFIES.",
   "FEEDBACK? COMPLAINTS? EXISTENTIAL CRISES? EMAIL US.",
+  "*DISCLAIMER: \"WIN REAL CREDITS\" IS A BIG FAT LIE. THERE ARE NO REWARDS. THE DEVELOPER IS BROKE. MAYBE ONE DAY. BUT TODAY IS NOT THAT DAY.",
 ];
 
 const SUPPORT_EMAIL = "support@clickbait.game";
@@ -40,14 +41,19 @@ export default function Footer() {
     <footer className="bg-surface-container-lowest border-t-[3px] border-outline-variant overflow-hidden">
       <div className="flex items-center">
         <div className="ticker-track flex whitespace-nowrap py-2">
-          {doubled.map((text, i) => (
-            <span key={i} className="inline-flex items-center mx-6 shrink-0">
-              <span className="font-display text-xs text-on-surface-variant uppercase">
-                {text}
+          {doubled.map((text, i) => {
+            const isDisclaimer = text.startsWith("*");
+            return (
+              <span key={i} className="inline-flex items-center mx-6 shrink-0">
+                <span className={`font-display text-xs uppercase ${
+                  isDisclaimer ? "text-primary-container font-bold" : "text-on-surface-variant"
+                }`}>
+                  {text}
+                </span>
+                <span className="ml-6 text-secondary text-xs">///</span>
               </span>
-              <span className="ml-6 text-secondary text-xs">///</span>
-            </span>
-          ))}
+            );
+          })}
         </div>
       </div>
       <div className="flex items-center justify-between px-6 py-1.5 border-t border-outline-variant/30">
