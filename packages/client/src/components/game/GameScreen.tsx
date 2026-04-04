@@ -118,6 +118,7 @@ export default function GameScreen({ difficulty, highScore, onGameOver, onBack }
         timeLeft={timeLeft}
         highScore={highScore}
         combo={combo}
+        difficulty={difficulty}
       />
 
       <div
@@ -131,7 +132,7 @@ export default function GameScreen({ difficulty, highScore, onGameOver, onBack }
           <Target
             x={target.x}
             y={target.y}
-            difficulty={DIFFICULTIES[difficulty].label}
+            difficulty={difficulty}
             onClick={onTargetClick}
           />
         )}

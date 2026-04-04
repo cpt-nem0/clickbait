@@ -9,14 +9,14 @@ interface DifficultyCardProps {
 const accentMap: Record<Difficulty, string> = {
   easy: "border-primary-container/30 hover:border-primary-container",
   medium: "border-primary-container/30 hover:border-primary-container",
-  hard: "border-secondary/30 hover:border-secondary",
+  hard: "border-error/30 hover:border-error",
   impossible: "border-secondary hover:border-secondary neon-glow-pink",
 };
 
 const labelColorMap: Record<Difficulty, string> = {
   easy: "text-primary-container",
   medium: "text-primary-container",
-  hard: "text-secondary",
+  hard: "text-error",
   impossible: "text-secondary",
 };
 
@@ -54,7 +54,9 @@ export default function DifficultyCard({
       <div className="mt-4 h-16 bg-surface-container-high flex items-center justify-center relative overflow-hidden">
         <div
           className={`w-8 h-8 ${
-            isImpossible ? "bg-secondary" : "bg-primary-container"
+            difficulty === "impossible" ? "bg-secondary" :
+            difficulty === "hard" ? "bg-error" :
+            "bg-primary-container"
           } transition-transform group-hover:scale-110`}
         />
         {config.evasion && (

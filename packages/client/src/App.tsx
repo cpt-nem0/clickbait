@@ -19,12 +19,20 @@ interface GameResult {
   accuracy: number;
 }
 
-function getHighScore(difficulty: Difficulty): number {
+const ALL_DIFFICULTIES: Difficulty[] = ["easy", "medium", "hard", "impossible"];
+
+function getOverallHighScore(): number {
+  return Math.max(
+    ...ALL_DIFFICULTIES.map(d => Number(localStorage.getItem(`clickbait_high_${d}`) || 0))
+  );
+}
+
+function getDifficultyHighScore(difficulty: Difficulty): number {
   return Number(localStorage.getItem(`clickbait_high_${difficulty}`) || 0);
 }
 
-function setHighScore(difficulty: Difficulty, score: number) {
-  const current = getHighScore(difficulty);
+function saveHighScore(difficulty: Difficulty, score: number) {
+  const current = Number(localStorage.getItem(`clickbait_high_${difficulty}`) || 0);
   if (score > current) {
     localStorage.setItem(`clickbait_high_${difficulty}`, String(score));
   }
@@ -51,6 +59,7 @@ export default function App() {
     () => !localStorage.getItem("clickbait_username")
   );
   const [highScore, setHighScoreState] = useState(0);
+  const [gameHighScore, setGameHighScore] = useState(0);
   const [gameKey, setGameKey] = useState(0);
   const [leaderboardRefresh, setLeaderboardRefresh] = useState(0);
 
@@ -77,8 +86,8 @@ export default function App() {
   }, [screen]);
 
   useEffect(() => {
-    setHighScoreState(getHighScore(difficulty));
-  }, [difficulty]);
+    setHighScoreState(getOverallHighScore());
+  }, []);
 
   const handleRegister = useCallback((name: string) => {
     setUsername(name);
@@ -88,14 +97,16 @@ export default function App() {
 
   const handleSelectDifficulty = useCallback((diff: Difficulty) => {
     setDifficulty(diff);
+    setGameHighScore(getDifficultyHighScore(diff));
     setScreen("playing");
   }, []);
 
   const handleGameOver = useCallback(
     (result: GameResult) => {
       setGameResult(result);
-      setHighScore(difficulty, result.score);
-      setHighScoreState(Math.max(getHighScore(difficulty), result.score));
+      saveHighScore(difficulty, result.score);
+      setHighScoreState(Math.max(getOverallHighScore(), result.score));
+      setGameHighScore(Math.max(getDifficultyHighScore(difficulty), result.score));
       setScreen("gameOver");
       setLeaderboardRefresh((n) => n + 1);
     },
@@ -177,7 +188,7 @@ export default function App() {
           <GameScreen
             key={gameKey}
             difficulty={difficulty}
-            highScore={highScore}
+            highScore={gameHighScore}
             onGameOver={handleGameOver}
             onBack={handleChangeDifficulty}
           />

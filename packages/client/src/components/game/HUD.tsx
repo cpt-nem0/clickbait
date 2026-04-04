@@ -1,11 +1,21 @@
+import { Difficulty } from "@/types";
+
 interface HUDProps {
   score: number;
   timeLeft: number;
   highScore: number;
   combo: number;
+  difficulty: Difficulty;
 }
 
-export default function HUD({ score, timeLeft, highScore, combo }: HUDProps) {
+const difficultyColor: Record<Difficulty, string> = {
+  easy: "bg-primary-container text-black",
+  medium: "bg-primary-container text-black",
+  hard: "bg-error text-white",
+  impossible: "bg-secondary text-black",
+};
+
+export default function HUD({ score, timeLeft, highScore, combo, difficulty }: HUDProps) {
   const minutes = Math.floor(timeLeft / 60);
   const seconds = Math.floor(timeLeft % 60);
   const timeStr = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
@@ -21,7 +31,9 @@ export default function HUD({ score, timeLeft, highScore, combo }: HUDProps) {
       </div>
 
       <div className="px-8 py-3 flex flex-col items-center justify-center border-r-[3px] border-outline-variant">
-        <p className="font-display text-xs text-on-surface-variant uppercase">TIME</p>
+        <span className={`font-display text-[10px] font-bold uppercase px-2 py-0.5 mb-1 ${difficultyColor[difficulty]}`}>
+          {difficulty}
+        </span>
         <p
           className={`font-display text-2xl font-bold tabular-nums ${
             isWarning ? "text-error animate-pulse" : "text-on-surface"
