@@ -116,7 +116,8 @@ export default function GameOver({
             <span className="w-12 font-display text-xs font-bold text-on-surface-variant uppercase">#</span>
             <span className="flex-1 font-display text-xs font-bold text-on-surface-variant uppercase">PLAYER_ID</span>
             <span className="w-24 text-right font-display text-xs font-bold text-on-surface-variant uppercase">DIFFICULTY</span>
-            <span className="w-28 text-right font-display text-xs font-bold text-on-surface-variant uppercase">REACTION</span>
+            <span className="w-24 text-right font-display text-xs font-bold text-on-surface-variant uppercase">REACTION</span>
+            <span className="w-20 text-right font-display text-xs font-bold text-on-surface-variant uppercase">ACCURACY</span>
             <span className="w-28 text-right font-display text-xs font-bold text-on-surface-variant uppercase">SCORE</span>
           </div>
 
@@ -164,8 +165,11 @@ export default function GameOver({
                 }`}>
                   {entry.difficulty}
                 </span>
-                <span className="w-28 text-right font-body text-sm text-on-surface-variant">
+                <span className="w-24 text-right font-body text-sm text-on-surface-variant">
                   {entry.avg_reaction_time}ms
+                </span>
+                <span className="w-20 text-right font-body text-sm text-on-surface-variant">
+                  {entry.accuracy}%
                 </span>
                 <span className={`w-28 text-right font-display text-sm font-bold ${
                   i < 3 ? "text-primary-container" : "text-on-surface"

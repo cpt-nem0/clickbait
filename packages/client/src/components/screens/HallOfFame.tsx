@@ -56,8 +56,11 @@ export default function HallOfFame({
             <span className="w-24 text-right font-display text-xs font-bold text-on-surface-variant uppercase">
               DIFFICULTY
             </span>
-            <span className="w-28 text-right font-display text-xs font-bold text-on-surface-variant uppercase">
+            <span className="w-24 text-right font-display text-xs font-bold text-on-surface-variant uppercase">
               REACTION
+            </span>
+            <span className="w-20 text-right font-display text-xs font-bold text-on-surface-variant uppercase">
+              ACCURACY
             </span>
             <span className="w-28 text-right font-display text-xs font-bold text-on-surface-variant uppercase">
               SCORE
@@ -112,8 +115,11 @@ export default function HallOfFame({
                 }`}>
                   {entry.difficulty}
                 </span>
-                <span className="w-28 text-right font-body text-sm text-on-surface-variant">
+                <span className="w-24 text-right font-body text-sm text-on-surface-variant">
                   {entry.avg_reaction_time}ms
+                </span>
+                <span className="w-20 text-right font-body text-sm text-on-surface-variant">
+                  {entry.accuracy}%
                 </span>
                 <span
                   className={`w-28 text-right font-display text-sm font-bold ${
