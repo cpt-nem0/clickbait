@@ -1,0 +1,9 @@
+.claude/
+.env
+.env.local
+.vercel/
+node_modules/
+dist/
+*.db
+*.db-wal
+*.db-shm

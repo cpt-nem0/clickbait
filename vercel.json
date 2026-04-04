@@ -1,0 +1,9 @@
+{
+  "buildCommand": "npm run build --workspace=packages/client",
+  "outputDirectory": "packages/client/dist",
+  "framework": "vite",
+  "rewrites": [
+    { "source": "/api/leaderboard", "destination": "/api/leaderboard" },
+    { "source": "/api/health", "destination": "/api/health" }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "name": "project-clickbait",
+  "private": true,
+  "workspaces": [
+    "packages/client",
+    "packages/server"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=packages/client & npm run dev --workspace=packages/server",
+    "dev:client": "npm run dev --workspace=packages/client",
+    "dev:server": "npm run dev --workspace=packages/server"
+  },
+  "dependencies": {
+    "@types/pg": "^8.20.0",
+    "@vercel/node": "^5.7.0",
+    "pg": "^8.20.0"
+  }
+}

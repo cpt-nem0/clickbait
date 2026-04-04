@@ -1,0 +1,190 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    border-radius: 0px !important;
+  }
+
+  body {
+    @apply bg-surface text-on-surface font-body;
+    margin: 0;
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display uppercase tracking-tight;
+  }
+}
+
+@layer components {
+  .scanline {
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.08) 2px,
+      rgba(0, 0, 0, 0.08) 4px
+    );
+  }
+
+  .noise-overlay {
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    background-size: 256px 256px;
+  }
+
+  .glitch-border {
+    position: relative;
+  }
+
+  .glitch-border::before,
+  .glitch-border::after {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    border: 3px solid;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .glitch-border::before {
+    border-color: #ff51fa;
+    transform: translate(-2px, -1px);
+  }
+
+  .glitch-border::after {
+    border-color: #00ffff;
+    transform: translate(2px, 1px);
+  }
+
+  .glitch-border:hover::before,
+  .glitch-border:hover::after {
+    opacity: 0.6;
+  }
+
+  .neon-glow-pink {
+    box-shadow: 0 0 15px rgba(255, 81, 250, 0.25), 0 0 30px rgba(255, 81, 250, 0.1);
+  }
+
+  .neon-glow-cyan {
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.25), 0 0 30px rgba(0, 255, 255, 0.1);
+  }
+
+  .neon-glow-yellow {
+    box-shadow: 0 0 15px rgba(202, 253, 0, 0.25), 0 0 30px rgba(202, 253, 0, 0.1);
+  }
+
+  .text-glow-yellow {
+    text-shadow: 0 0 10px rgba(202, 253, 0, 0.5), 0 0 20px rgba(202, 253, 0, 0.2);
+  }
+
+  .text-glow-pink {
+    text-shadow: 0 0 10px rgba(255, 81, 250, 0.5), 0 0 20px rgba(255, 81, 250, 0.2);
+  }
+
+  .text-glow-cyan {
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5), 0 0 20px rgba(0, 255, 255, 0.2);
+  }
+
+  .hard-shadow {
+    box-shadow: 4px 4px 0px 0px #000000;
+  }
+
+  .hard-shadow-sm {
+    box-shadow: 2px 2px 0px 0px #000000;
+  }
+
+  .glass-panel {
+    background: rgba(44, 43, 50, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .structural-border {
+    border: 3px solid #76757a;
+  }
+
+  .structural-border-primary {
+    border: 3px solid #cafd00;
+  }
+
+  .btn-primary {
+    @apply bg-primary-container text-black font-display font-bold uppercase px-6 py-3;
+    box-shadow: 4px 4px 0px 0px #000000;
+    transition: transform 0.1s cubic-bezier(0.68, -0.55, 0.265, 1.55),
+                box-shadow 0.1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  .btn-primary:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 5px 5px 0px 0px #000000;
+  }
+
+  .btn-primary:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px 0px #000000;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-black font-display font-bold uppercase px-6 py-3;
+    box-shadow: 4px 4px 0px 0px #000000;
+    transition: transform 0.1s cubic-bezier(0.68, -0.55, 0.265, 1.55),
+                box-shadow 0.1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  .btn-secondary:hover {
+    @apply bg-secondary-container;
+    animation: glitch-x 0.3s ease-in-out;
+  }
+
+  .btn-outline {
+    @apply font-display font-bold uppercase px-6 py-3 text-on-surface;
+    border: 3px solid #76757a;
+    transition: border-color 0.2s;
+  }
+
+  .btn-outline:hover {
+    border-color: #f3ffca;
+  }
+
+  .sidebar-nav-item {
+    transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+  }
+
+  .sidebar-nav-item > * {
+    display: inline-block;
+    transition: transform 0.15s;
+  }
+
+  .sidebar-nav-item:hover > * {
+    animation: glitch-x 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  .sticker {
+    @apply font-display font-bold uppercase text-xs px-3 py-1;
+    background: #ff7351;
+    color: #450900;
+    position: absolute;
+    transform: rotate(-3deg);
+    box-shadow: 2px 2px 0px 0px #000000;
+    z-index: 10;
+  }
+}
+
+@keyframes glitch-x {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  50% { transform: translateX(2px); }
+  75% { transform: translateX(-1px); }
+}
