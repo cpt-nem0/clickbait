@@ -6,31 +6,41 @@ interface NavBarProps {
   onLogoClick: () => void;
 }
 
-const HELP_LINES = [
-  "WHY DO YOU NEED HELP? IT'S CLICKING. YOU CLICK THINGS.",
-  "STEP 1: SEE GREEN BOX.",
-  "STEP 2: CLICK GREEN BOX.",
-  "STEP 3: REPEAT UNTIL TIME RUNS OUT.",
-  "STEP 4: QUESTION YOUR LIFE CHOICES.",
-  "",
-  "STILL CONFUSED? HERE'S MORE:",
-  "",
-  "Q: HOW DO I WIN?",
-  "A: CLICK FASTER THAN EVERYONE ELSE. IT'S NOT ROCKET SCIENCE.",
-  "",
-  "Q: WHAT'S IMPOSSIBLE MODE?",
-  "A: THE BOX RUNS AWAY FROM YOUR CURSOR. YES, REALLY. NO, WE'RE NOT SORRY.",
-  "",
-  "Q: MY SCORE DIDN'T SAVE!",
-  "A: DID YOU CLICK SUBMIT? IT'S A GAME ABOUT CLICKING AND YOU FORGOT TO CLICK.",
-  "",
-  "Q: IS THIS GAME RIGGED?",
-  "A: NO. YOU'RE JUST SLOW. (KIDDING. MAYBE.)",
-  "",
-  "Q: I FOUND A BUG.",
-  "A: IT'S A FEATURE. BUT FINE, EMAIL US.",
-  "",
-  "NOW CLOSE THIS AND GO CLICK SOMETHING.",
+type HelpLine =
+  | { type: "heading"; text: string }
+  | { type: "step"; num: number; text: string }
+  | { type: "divider" }
+  | { type: "subheading"; text: string }
+  | { type: "q"; text: string }
+  | { type: "a"; text: string }
+  | { type: "outro"; text: string };
+
+const HELP_CONTENT: HelpLine[] = [
+  { type: "heading", text: "WHY DO YOU NEED HELP? IT'S CLICKING. YOU CLICK THINGS." },
+  { type: "divider" },
+  { type: "step", num: 1, text: "SEE GREEN BOX." },
+  { type: "step", num: 2, text: "CLICK GREEN BOX." },
+  { type: "step", num: 3, text: "REPEAT UNTIL TIME RUNS OUT." },
+  { type: "step", num: 4, text: "QUESTION YOUR LIFE CHOICES." },
+  { type: "divider" },
+  { type: "subheading", text: "STILL CONFUSED? HERE'S MORE:" },
+  { type: "divider" },
+  { type: "q", text: "HOW DO I WIN?" },
+  { type: "a", text: "CLICK FASTER THAN EVERYONE ELSE. IT'S NOT ROCKET SCIENCE." },
+  { type: "divider" },
+  { type: "q", text: "WHAT'S IMPOSSIBLE MODE?" },
+  { type: "a", text: "THE BOX RUNS AWAY FROM YOUR CURSOR. YES, REALLY. NO, WE'RE NOT SORRY." },
+  { type: "divider" },
+  { type: "q", text: "MY SCORE DIDN'T SAVE!" },
+  { type: "a", text: "DID YOU CLICK SUBMIT? IT'S A GAME ABOUT CLICKING AND YOU FORGOT TO CLICK." },
+  { type: "divider" },
+  { type: "q", text: "IS THIS GAME RIGGED?" },
+  { type: "a", text: "NO. YOU'RE JUST SLOW. (KIDDING. MAYBE.)" },
+  { type: "divider" },
+  { type: "q", text: "I FOUND A BUG." },
+  { type: "a", text: "IT'S A FEATURE. BUT FINE, EMAIL US." },
+  { type: "divider" },
+  { type: "outro", text: "NOW CLOSE THIS AND GO CLICK SOMETHING." },
 ];
 
 export default function NavBar({ currentView, onNavigate, onLogoClick }: NavBarProps) {
@@ -85,35 +95,66 @@ export default function NavBar({ currentView, onNavigate, onLogoClick }: NavBarP
           onClick={() => setShowHelp(false)}
         >
           <div
-            className="relative bg-surface-container border-[3px] border-tertiary neon-glow-cyan w-full max-w-lg p-8 max-h-[80vh] overflow-auto"
+            className="relative w-full max-w-lg"
             onClick={(e) => e.stopPropagation()}
           >
-            <span className="sticker -top-3 -right-3 bg-tertiary-container text-black">
+            <span className="sticker -top-3 -right-3 bg-tertiary-container text-black z-10">
               SERIOUSLY?
             </span>
+            <div className="bg-surface-container border-[3px] border-tertiary neon-glow-cyan p-8 max-h-[80vh] overflow-auto">
 
             <h2 className="font-display text-display-sm font-bold text-tertiary text-glow-cyan uppercase mb-6">
               HELP_CENTER
             </h2>
 
-            <div className="space-y-1">
-              {HELP_LINES.map((line, i) =>
-                line === "" ? (
-                  <div key={i} className="h-3" />
-                ) : line.startsWith("Q:") ? (
-                  <p key={i} className="font-display text-sm font-bold text-primary-container uppercase">
-                    {line}
-                  </p>
-                ) : line.startsWith("A:") ? (
-                  <p key={i} className="font-body text-sm text-on-surface-variant">
-                    {line}
-                  </p>
-                ) : (
-                  <p key={i} className="font-display text-sm text-on-surface uppercase">
-                    {line}
-                  </p>
-                )
-              )}
+            <div className="space-y-2">
+              {HELP_CONTENT.map((line, i) => {
+                switch (line.type) {
+                  case "heading":
+                    return (
+                      <p key={i} className="font-display text-lg font-bold text-secondary text-glow-pink uppercase">
+                        {line.text}
+                      </p>
+                    );
+                  case "step":
+                    return (
+                      <div key={i} className="flex items-center gap-3">
+                        <span className="w-7 h-7 flex items-center justify-center bg-primary-container text-black font-display text-xs font-bold shrink-0">
+                          {line.num}
+                        </span>
+                        <span className="font-display text-sm font-bold text-on-surface uppercase">
+                          {line.text}
+                        </span>
+                      </div>
+                    );
+                  case "divider":
+                    return <div key={i} className="h-2" />;
+                  case "subheading":
+                    return (
+                      <p key={i} className="font-display text-sm font-bold text-tertiary uppercase">
+                        {line.text}
+                      </p>
+                    );
+                  case "q":
+                    return (
+                      <p key={i} className="font-display text-sm font-bold text-primary-container uppercase">
+                        Q: {line.text}
+                      </p>
+                    );
+                  case "a":
+                    return (
+                      <p key={i} className="font-body text-sm text-on-surface-variant pl-4 border-l-2 border-outline-variant">
+                        {line.text}
+                      </p>
+                    );
+                  case "outro":
+                    return (
+                      <p key={i} className="font-display text-base font-bold text-error uppercase mt-2">
+                        {line.text}
+                      </p>
+                    );
+                }
+              })}
             </div>
 
             <button
@@ -122,6 +163,7 @@ export default function NavBar({ currentView, onNavigate, onLogoClick }: NavBarP
             >
               OK I GET IT. LET ME CLICK.
             </button>
+            </div>
           </div>
         </div>
       )}

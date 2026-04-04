@@ -29,5 +29,5 @@ export const DIFFICULTIES: Record<Difficulty, DifficultyConfig> = {
 
 export const GAME_DURATION = 30;
 export const TARGET_SIZE = 80;
-export const EVASION_THRESHOLD = 120;
+export const EVASION_THRESHOLD = 90;
 export const MIN_REACTION_TIME = 80;
