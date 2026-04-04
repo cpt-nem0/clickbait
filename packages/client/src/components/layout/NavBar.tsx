@@ -4,6 +4,7 @@ interface NavBarProps {
   currentView: "arcade" | "leaderboard";
   onNavigate: (view: "arcade" | "leaderboard") => void;
   onLogoClick: () => void;
+  showNav?: boolean;
 }
 
 type HelpLine =
@@ -43,7 +44,7 @@ const HELP_CONTENT: HelpLine[] = [
   { type: "outro", text: "NOW CLOSE THIS AND GO CLICK SOMETHING." },
 ];
 
-export default function NavBar({ currentView, onNavigate, onLogoClick }: NavBarProps) {
+export default function NavBar({ currentView, onNavigate, onLogoClick, showNav = false }: NavBarProps) {
   const [showHelp, setShowHelp] = useState(false);
 
   return (
@@ -56,28 +57,30 @@ export default function NavBar({ currentView, onNavigate, onLogoClick }: NavBarP
           >
             CLICKBAIT
           </button>
-          <div className="flex gap-1">
-            <button
-              onClick={() => onNavigate("arcade")}
-              className={`px-4 py-2 font-display text-sm font-bold uppercase tracking-tight transition-colors ${
-                currentView === "arcade"
-                  ? "bg-primary-container text-black"
-                  : "text-on-surface-variant hover:text-on-surface"
-              }`}
-            >
-              ARCADE
-            </button>
-            <button
-              onClick={() => onNavigate("leaderboard")}
-              className={`px-4 py-2 font-display text-sm font-bold uppercase tracking-tight transition-colors ${
-                currentView === "leaderboard"
-                  ? "bg-primary-container text-black"
-                  : "text-on-surface-variant hover:text-on-surface"
-              }`}
-            >
-              LEADERBOARD
-            </button>
-          </div>
+          {showNav && (
+            <div className="flex gap-1">
+              <button
+                onClick={() => onNavigate("arcade")}
+                className={`px-4 py-2 font-display text-sm font-bold uppercase tracking-tight transition-colors ${
+                  currentView === "arcade"
+                    ? "bg-primary-container text-black"
+                    : "text-on-surface-variant hover:text-on-surface"
+                }`}
+              >
+                ARCADE
+              </button>
+              <button
+                onClick={() => onNavigate("leaderboard")}
+                className={`px-4 py-2 font-display text-sm font-bold uppercase tracking-tight transition-colors ${
+                  currentView === "leaderboard"
+                    ? "bg-primary-container text-black"
+                    : "text-on-surface-variant hover:text-on-surface"
+                }`}
+              >
+                LEADERBOARD
+              </button>
+            </div>
+          )}
         </div>
         <div className="flex items-center gap-4">
           <button

@@ -240,7 +240,7 @@ export default function App() {
   return (
     <div className="h-screen flex flex-col bg-surface">
       <div className="scanline" />
-      <NavBar currentView={currentView} onNavigate={handleNavigate} onLogoClick={handleLogoClick} />
+      <NavBar currentView={currentView} onNavigate={handleNavigate} onLogoClick={handleLogoClick} showNav={screen === "playing"} />
       <div className="flex flex-1 overflow-hidden">
         {screen !== "playing" && (
           <Sidebar
