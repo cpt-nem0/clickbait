@@ -188,3 +188,16 @@
   50% { transform: translateX(2px); }
   75% { transform: translateX(-1px); }
 }
+
+@keyframes ticker-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.ticker-track {
+  animation: ticker-scroll 120s linear infinite;
+}
+
+.ticker-track:hover {
+  animation-play-state: paused;
+}
