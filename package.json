@@ -1,6 +1,7 @@
 {
   "name": "project-clickbait",
   "private": true,
+  "type": "module",
   "workspaces": [
     "packages/client",
     "packages/server"
