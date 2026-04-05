@@ -181,31 +181,30 @@
     animation: holo-shine 1.5s ease-in-out infinite;
   }
 
-  /* === SKIN: VOID — circle, pulsing black hole === */
+  /* === SKIN: VOID — collapsing square, consuming itself === */
   .skin-void {
     background: #000;
     border: 3px solid #ff51fa;
-    border-radius: 50% !important;
-    box-shadow: 0 0 20px rgba(255,81,250,0.3), inset 0 0 20px rgba(255,81,250,0.15);
-    animation: void-pulse 3s ease-in-out infinite;
     position: relative;
-    overflow: visible;
+    overflow: hidden;
+    animation: void-breathe 3s ease-in-out infinite;
   }
+  /* Inward-collapsing border layers */
   .skin-void::before {
     content: "";
     position: absolute;
-    inset: -8px;
-    border: 1px solid rgba(255,81,250,0.3);
-    border-radius: 50% !important;
-    animation: void-ring 2s ease-in-out infinite;
+    inset: 4px;
+    border: 2px solid rgba(255,81,250,0.4);
+    animation: void-collapse 2s ease-in-out infinite;
+    pointer-events: none;
   }
   .skin-void::after {
     content: "";
     position: absolute;
-    inset: -16px;
-    border: 1px solid rgba(255,81,250,0.15);
-    border-radius: 50% !important;
-    animation: void-ring 2s ease-in-out infinite 0.5s;
+    inset: 10px;
+    border: 1px solid rgba(255,81,250,0.2);
+    animation: void-collapse 2s ease-in-out infinite 0.3s;
+    pointer-events: none;
   }
 
   /* === SKIN: GLITCH — broken reality === */
@@ -241,6 +240,67 @@
     animation: glitch-tear 3s steps(1) infinite;
     z-index: 2;
     pointer-events: none;
+  }
+
+  /* === SKIN: CHROME — liquid metal === */
+  .skin-chrome {
+    background: linear-gradient(
+      135deg,
+      #e8e8e8 0%,
+      #b0b0b0 15%,
+      #ffffff 25%,
+      #8a8a8a 35%,
+      #d4d4d4 45%,
+      #ffffff 50%,
+      #a0a0a0 60%,
+      #e0e0e0 70%,
+      #909090 80%,
+      #ffffff 90%,
+      #b8b8b8 100%
+    );
+    background-size: 200% 200%;
+    animation: chrome-shift 4s ease infinite;
+    border: 2px solid rgba(255,255,255,0.6);
+    box-shadow:
+      4px 4px 0 #000,
+      0 0 20px rgba(255,255,255,0.15),
+      inset 0 1px 0 rgba(255,255,255,0.8);
+    position: relative;
+    overflow: hidden;
+  }
+  /* Shine sweep */
+  .skin-chrome::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      115deg,
+      transparent 40%,
+      rgba(255,255,255,0.8) 48%,
+      rgba(255,255,255,0.4) 50%,
+      transparent 52%
+    );
+    animation: chrome-shine 3s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 1;
+  }
+  /* Warped reflection edge */
+  .skin-chrome::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(255,255,255,0.3) 0%,
+      transparent 40%,
+      transparent 60%,
+      rgba(0,0,0,0.2) 100%
+    );
+    pointer-events: none;
+    z-index: 2;
   }
 
   .glass-panel {
@@ -373,20 +433,46 @@
   100% { background-position: 200% 200%; }
 }
 
-@keyframes void-pulse {
+@keyframes void-breathe {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(255,81,250,0.3), inset 0 0 20px rgba(255,81,250,0.15);
-    transform: scale(1);
+    box-shadow:
+      4px 4px 0 #000,
+      0 0 20px rgba(255,81,250,0.3),
+      inset 0 0 30px rgba(255,81,250,0.1);
   }
   50% {
-    box-shadow: 0 0 40px rgba(255,81,250,0.6), inset 0 0 35px rgba(255,81,250,0.3);
-    transform: scale(1.03);
+    box-shadow:
+      4px 4px 0 #000,
+      0 0 40px rgba(255,81,250,0.5),
+      inset 0 0 50px rgba(255,81,250,0.25);
   }
 }
 
-@keyframes void-ring {
-  0%, 100% { transform: scale(1); opacity: 0.3; }
-  50% { transform: scale(1.15); opacity: 0; }
+@keyframes void-collapse {
+  0%, 100% {
+    inset: 4px;
+    opacity: 0.5;
+  }
+  50% {
+    inset: 15px;
+    opacity: 0.15;
+  }
+}
+
+/* Chrome: metallic gradient shift */
+@keyframes chrome-shift {
+  0% { background-position: 0% 0%; }
+  25% { background-position: 100% 50%; }
+  50% { background-position: 50% 100%; }
+  75% { background-position: 0% 50%; }
+  100% { background-position: 0% 0%; }
+}
+
+/* Chrome: shine sweep across surface */
+@keyframes chrome-shine {
+  0% { transform: translateX(-80%) rotate(115deg); }
+  40% { transform: translateX(80%) rotate(115deg); }
+  100% { transform: translateX(80%) rotate(115deg); }
 }
 
 /* Glitch: main body snaps position + skews briefly */

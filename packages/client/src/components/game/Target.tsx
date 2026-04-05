@@ -14,7 +14,7 @@ export default function Target({ x, y, difficulty, skin, onClick }: TargetProps)
   return (
     <button
       onClick={onClick}
-      className="absolute animate-elastic-in select-none"
+      className="absolute animate-elastic-in select-none z-20"
       style={{
         left: x - TARGET_SIZE / 2,
         top: y - TARGET_SIZE / 2,

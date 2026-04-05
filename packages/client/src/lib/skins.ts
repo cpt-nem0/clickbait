@@ -56,6 +56,14 @@ export const SKINS: TargetSkin[] = [
     text: "text-primary-container",
     label: "REALITY IS BROKEN.",
   },
+  {
+    id: "chrome",
+    name: "CHROME",
+    unlockScore: 75000,
+    cssClass: "skin-chrome",
+    text: "text-black",
+    label: "LIQUID METAL. YOU EARNED THIS.",
+  },
 ];
 
 export function getUnlockedSkins(highScore: number): TargetSkin[] {
