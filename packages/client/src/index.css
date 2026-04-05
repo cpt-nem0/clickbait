@@ -303,6 +303,10 @@
     z-index: 2;
   }
 
+  .vibration-overlay {
+    background: linear-gradient(45deg, rgba(202, 253, 0, 0.05) 0%, transparent 100%);
+  }
+
   .glass-panel {
     background: rgba(44, 43, 50, 0.6);
     backdrop-filter: blur(20px);
