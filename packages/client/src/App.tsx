@@ -12,6 +12,8 @@ import GameOver from "@/components/screens/GameOver";
 import HallOfFame from "@/components/screens/HallOfFame";
 import RegisterModal from "@/components/screens/RegisterModal";
 import MobileBlock from "@/components/screens/MobileBlock";
+import BotShame from "@/components/screens/BotShame";
+import { analyzeSignals, BehaviorSignals } from "@/lib/anticheat";
 
 function isMobile(): boolean {
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -25,6 +27,7 @@ interface GameResult {
   score: number;
   avgReactionTime: number;
   accuracy: number;
+  behaviorSignals: BehaviorSignals;
 }
 
 const ALL_DIFFICULTIES: Difficulty[] = ["easy", "medium", "hard", "impossible"];
@@ -68,6 +71,7 @@ export default function App() {
   );
   const [highScore, setHighScoreState] = useState(0);
   const [gameHighScore, setGameHighScore] = useState(0);
+  const [botShame, setBotShame] = useState<{ score: number; reasons: string[] } | null>(null);
   const [activeSkin, setActiveSkin] = useState<TargetSkin>(() => getSkinById(getSelectedSkin()));
   const [gameKey, setGameKey] = useState(0);
   const [leaderboardRefresh, setLeaderboardRefresh] = useState(0);
@@ -112,6 +116,11 @@ export default function App() {
 
   const handleGameOver = useCallback(
     (result: GameResult) => {
+      const verdict = analyzeSignals(result.behaviorSignals);
+      if (verdict.isSus) {
+        setBotShame({ score: result.score, reasons: verdict.reasons });
+        return;
+      }
       setGameResult(result);
       saveHighScore(difficulty, result.score);
       setHighScoreState(Math.max(getOverallHighScore(), result.score));
@@ -196,6 +205,10 @@ export default function App() {
               setActiveSkin(skin);
               setSelectedSkin(skin.id);
             }}
+            onTestBotShame={() => setBotShame({
+              score: 69420,
+              reasons: ["SUPERHUMAN_REACTION_TIME", "AIMBOT_PRECISION", "NO_MOUSE_MOVEMENT"],
+            })}
           />
         );
       case "playing":
@@ -264,6 +277,17 @@ export default function App() {
         {renderContent()}
       </div>
       <Footer />
+      {botShame && (
+        <BotShame
+          score={botShame.score}
+          reasons={botShame.reasons}
+          onDismiss={() => {
+            setBotShame(null);
+            setScreen("difficulty");
+            setCurrentView("arcade");
+          }}
+        />
+      )}
     </div>
   );
 }

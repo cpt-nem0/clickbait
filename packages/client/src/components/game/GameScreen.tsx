@@ -6,6 +6,7 @@ import { shouldEvade, getEvasionPosition } from "@/lib/target-logic";
 import { DIFFICULTIES } from "@/lib/difficulty";
 import { sfx } from "@/lib/audio";
 import { TargetSkin } from "@/lib/skins";
+import { BehaviorSignals } from "@/lib/anticheat";
 import HUD from "./HUD";
 import Target from "./Target";
 import StickerOverlay from "./StickerOverlay";
@@ -14,7 +15,7 @@ interface GameScreenProps {
   difficulty: Difficulty;
   highScore: number;
   skin: TargetSkin;
-  onGameOver: (stats: { score: number; avgReactionTime: number; accuracy: number }) => void;
+  onGameOver: (stats: { score: number; avgReactionTime: number; accuracy: number; behaviorSignals: BehaviorSignals }) => void;
   onBack: () => void;
 }
 
@@ -46,6 +47,8 @@ export default function GameScreen({ difficulty, highScore, skin, onGameOver, on
     handleTargetClick,
     handleMiss,
     setTarget,
+    trackMouseMove,
+    getBehaviorSignals,
   } = useGameState(containerSize);
 
   useEffect(() => {
@@ -60,6 +63,7 @@ export default function GameScreen({ difficulty, highScore, skin, onGameOver, on
         score: stats.score,
         avgReactionTime: stats.avgReactionTime,
         accuracy: stats.accuracy,
+        behaviorSignals: getBehaviorSignals(),
       });
     }
   }, [gameState, stats, onGameOver]);
@@ -126,6 +130,7 @@ export default function GameScreen({ difficulty, highScore, skin, onGameOver, on
       <div
         ref={containerRef}
         onClick={onContainerClick}
+        onMouseMove={trackMouseMove}
         className="flex-1 relative bg-surface overflow-hidden cursor-crosshair select-none"
       >
         <div className="noise-overlay" style={{ position: "absolute" }} />

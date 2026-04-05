@@ -4,6 +4,7 @@ import { DIFFICULTIES, GAME_DURATION } from "@/lib/difficulty";
 import { spawnTarget } from "@/lib/target-logic";
 import { useTimer } from "./useTimer";
 import { sfx, startMusic, stopMusic } from "@/lib/audio";
+import { createBehaviorTracker } from "@/lib/anticheat";
 
 const initialStats: GameStats = {
   score: 0,
@@ -25,6 +26,7 @@ export function useGameState(containerSize: { width: number; height: number }) {
   const targetSpawnTime = useRef(0);
   const despawnTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const aborted = useRef(false);
+  const behaviorTracker = useRef(createBehaviorTracker());
 
   const endGame = useCallback(() => {
     if (aborted.current) return;
@@ -64,6 +66,7 @@ export function useGameState(containerSize: { width: number; height: number }) {
       setStats(initialStats);
       setCombo(0);
       setGameState("playing");
+      behaviorTracker.current = createBehaviorTracker();
       startTimer();
       sfx.gameStart();
       startMusic();
@@ -81,6 +84,7 @@ export function useGameState(containerSize: { width: number; height: number }) {
       if (gameState !== "playing" || !target) return;
 
       const reactionTime = Date.now() - targetSpawnTime.current;
+      behaviorTracker.current.trackClick(clickX, clickY, target.x, target.y, reactionTime);
 
       setStats((prev) => {
         const newReactionTimes = [...prev.reactionTimes, reactionTime];
@@ -165,5 +169,7 @@ export function useGameState(containerSize: { width: number; height: number }) {
     handleMiss,
     resetGame,
     setTarget,
+    trackMouseMove: () => behaviorTracker.current.trackMouseMove(),
+    getBehaviorSignals: () => behaviorTracker.current.getSignals(),
   };
 }

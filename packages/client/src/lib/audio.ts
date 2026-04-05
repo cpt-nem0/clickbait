@@ -119,6 +119,39 @@ export const sfx = {
     setTimeout(() => playTone(990, 0.08, "triangle", 0.1, 25), 80);
   },
 
+  // Bot caught — dramatic DUN DUN DUN + siren wail
+  busted() {
+    // DUN DUN DUN (low dramatic hits)
+    const hits = [130.81, 130.81, 98]; // C3, C3, G2
+    hits.forEach((freq, i) => {
+      setTimeout(() => {
+        playTone(freq, 0.4, "sawtooth", 0.15);
+        playTone(freq * 2, 0.3, "square", 0.08);
+        playNoise(0.1, 0.06);
+      }, i * 400);
+    });
+
+    // Siren wail after the hits
+    setTimeout(() => {
+      const c = getCtx();
+      const osc = c.createOscillator();
+      const gain = c.createGain();
+      osc.type = "sawtooth";
+      osc.frequency.setValueAtTime(800, c.currentTime);
+      osc.frequency.linearRampToValueAtTime(400, c.currentTime + 0.5);
+      osc.frequency.linearRampToValueAtTime(800, c.currentTime + 1);
+      osc.frequency.linearRampToValueAtTime(400, c.currentTime + 1.5);
+      osc.frequency.linearRampToValueAtTime(800, c.currentTime + 2);
+      gain.gain.setValueAtTime(0.08, c.currentTime);
+      gain.gain.setValueAtTime(0.08, c.currentTime + 1.8);
+      gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 2.2);
+      osc.connect(gain);
+      gain.connect(c.destination);
+      osc.start();
+      osc.stop(c.currentTime + 2.2);
+    }, 1300);
+  },
+
   // Evasion dodge — swoosh
   dodge() {
     const c = getCtx();
