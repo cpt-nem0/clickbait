@@ -205,10 +205,6 @@ export default function App() {
               setActiveSkin(skin);
               setSelectedSkin(skin.id);
             }}
-            onTestBotShame={() => setBotShame({
-              score: 69420,
-              reasons: ["SUPERHUMAN_REACTION_TIME", "AIMBOT_PRECISION", "NO_MOUSE_MOVEMENT"],
-            })}
           />
         );
       case "playing":
@@ -249,9 +245,9 @@ export default function App() {
     }
   };
 
-  // if (isMobile()) {
-  //   return <MobileBlock />;
-  // }
+  if (isMobile()) {
+    return <MobileBlock />;
+  }
 
   if (showRegister) {
     return (

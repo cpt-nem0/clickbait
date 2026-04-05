@@ -13,10 +13,9 @@ interface DifficultySelectProps {
   highScore: number;
   activeSkin: TargetSkin;
   onSkinSelect: (skin: TargetSkin) => void;
-  onTestBotShame?: () => void;
 }
 
-export default function DifficultySelect({ onSelect, leaderboard, currentUsername, highScore, activeSkin, onSkinSelect, onTestBotShame }: DifficultySelectProps) {
+export default function DifficultySelect({ onSelect, leaderboard, currentUsername, highScore, activeSkin, onSkinSelect }: DifficultySelectProps) {
   return (
     <div className="flex flex-1 overflow-auto">
       <div className="flex-1 p-8">
@@ -62,11 +61,6 @@ export default function DifficultySelect({ onSelect, leaderboard, currentUsernam
         <SkinSelector highScore={highScore} activeSkin={activeSkin} onSelect={onSkinSelect} />
         <GlobalRankings entries={leaderboard} currentUsername={currentUsername} />
         <PromoCard />
-        {onTestBotShame && (
-          <button onClick={onTestBotShame} className="w-full text-center font-display text-[10px] text-on-surface-variant/30 uppercase hover:text-error transition-colors py-2">
-            // TEST_BOT_DETECTION
-          </button>
-        )}
       </div>
     </div>
   );
