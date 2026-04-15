@@ -71,6 +71,7 @@ export default function App() {
   );
   const [highScore, setHighScoreState] = useState(0);
   const [gameHighScore, setGameHighScore] = useState(0);
+  const [isNewHighScore, setIsNewHighScore] = useState(false);
   const [botShame, setBotShame] = useState<{ score: number; reasons: string[] } | null>(null);
   const [activeSkin, setActiveSkin] = useState<TargetSkin>(() => getSkinById(getSelectedSkin()));
   const [gameKey, setGameKey] = useState(0);
@@ -121,7 +122,9 @@ export default function App() {
         setBotShame({ score: result.score, reasons: verdict.reasons });
         return;
       }
+      const prevDifficultyHigh = getDifficultyHighScore(difficulty);
       setGameResult(result);
+      setIsNewHighScore(result.score > prevDifficultyHigh);
       saveHighScore(difficulty, result.score);
       setHighScoreState(Math.max(getOverallHighScore(), result.score));
       setGameHighScore(Math.max(getDifficultyHighScore(difficulty), result.score));
@@ -225,7 +228,7 @@ export default function App() {
             avgReactionTime={gameResult.avgReactionTime}
             accuracy={gameResult.accuracy}
             difficulty={difficulty}
-            isHighScore={gameResult.score >= highScore}
+            isHighScore={isNewHighScore}
             currentUsername={username}
             leaderboard={leaderboard}
             onSubmitScore={handleSubmitScore}
