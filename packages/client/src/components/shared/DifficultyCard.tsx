@@ -34,35 +34,53 @@ const ctaColorMap: Record<Difficulty, string> = {
   impossible: "text-primary-container",
 };
 
+const mechanicLabel: Record<Difficulty, string> = {
+  easy: "LINEAR",
+  medium: "STATIC",
+  hard: "SHRINK",
+  impossible: "EVADE",
+};
+
 function PreviewContent({ difficulty }: { difficulty: Difficulty }) {
   switch (difficulty) {
     case "easy":
       return (
         <>
-          <div className="w-12 h-12 bg-primary-container animate-ping" />
-          <span className="absolute bottom-2 left-2 text-[10px] text-on-surface-variant/50 font-display">PREVIEW: STATIC_SPAWN</span>
+          <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 60">
+            <line
+              x1="10"
+              y1="45"
+              x2="90"
+              y2="15"
+              stroke="#cafd00"
+              strokeWidth="1"
+              strokeDasharray="3 3"
+              strokeOpacity="0.4"
+            />
+          </svg>
+          <div className="w-8 h-8 bg-primary-container preview-linear-slide" />
+          <span className="absolute bottom-2 left-2 text-[10px] text-on-surface-variant/50 font-display">PREVIEW: LINEAR_PATH</span>
         </>
       );
     case "medium":
       return (
         <>
-          <div className="w-12 h-12 bg-secondary animate-bounce" />
-          <span className="absolute bottom-2 left-2 text-[10px] text-on-surface-variant/50 font-display">PREVIEW: LINEAR_PATH</span>
+          <div className="w-8 h-8 bg-secondary preview-static-popup" />
+          <span className="absolute bottom-2 left-2 text-[10px] text-on-surface-variant/50 font-display">PREVIEW: STATIC_SPAWN</span>
         </>
       );
     case "hard":
       return (
         <>
-          <div className="w-8 h-8 bg-error absolute top-4 left-10" />
-          <div className="w-8 h-8 bg-error-container absolute bottom-4 right-10" />
-          <span className="absolute bottom-2 left-2 text-[10px] text-on-surface-variant/50 font-display">PREVIEW: MULTI_TARGET</span>
+          <div className="bg-error preview-shrinking" />
+          <span className="absolute bottom-2 left-2 text-[10px] text-on-surface-variant/50 font-display">PREVIEW: SHRINKING_TARGET</span>
         </>
       );
     case "impossible":
       return (
         <>
-          <div className="w-16 h-16 border-4 border-primary-container animate-spin" />
-          <span className="absolute bottom-2 left-2 text-[10px] text-primary-container/50 font-display">PREVIEW: GHOST_TARGETS</span>
+          <div className="w-8 h-8 bg-primary-container preview-evading" />
+          <span className="absolute bottom-2 left-2 text-[10px] text-primary-container/50 font-display">PREVIEW: EVASION</span>
         </>
       );
   }
@@ -78,7 +96,7 @@ export default function DifficultyCard({
   return (
     <button
       onClick={() => onSelect(difficulty)}
-      className={`relative ${isImpossible ? "bg-black" : "bg-surface-container-high"} p-5 border-4 ${accentMap[difficulty]} transition-all group text-left flex flex-col`}
+      className={`relative min-w-0 ${isImpossible ? "bg-black" : "bg-surface-container-high"} p-5 border-4 ${accentMap[difficulty]} transition-all group text-left flex flex-col`}
     >
       {isImpossible && (
         <>
@@ -91,8 +109,8 @@ export default function DifficultyCard({
         <h3 className={`font-display text-2xl font-black ${labelColorMap[difficulty]}`}>
           {config.label}
         </h3>
-        <span className={`${badgeColorMap[difficulty]} font-display text-[10px] font-bold px-2 py-1 uppercase`}>
-          {isImpossible ? `${(config.timeout / 1000).toFixed(1)}S + EVASION` : `${(config.timeout / 1000).toFixed(1)}S WINDOW`}
+        <span className={`${badgeColorMap[difficulty]} font-display text-[10px] font-bold px-2 py-1 uppercase whitespace-nowrap shrink-0`}>
+          {mechanicLabel[difficulty]}
         </span>
       </div>
 

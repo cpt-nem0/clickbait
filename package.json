@@ -15,5 +15,8 @@
     "@types/pg": "^8.20.0",
     "@vercel/node": "^5.7.0",
     "pg": "^8.20.0"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-darwin-arm64": "^4.60.1"
   }
 }

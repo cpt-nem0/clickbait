@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+  <!-- Pink shadow brackets, offset +2,+2 from lime (bottom-right extends past viewBox on purpose) -->
+  <g fill="#ff51fa" opacity="0.7">
+    <polygon points="3,3 9,3 9,5 5,5 5,9 3,9"/>
+    <polygon points="15,3 21,3 21,9 19,9 19,5 15,5"/>
+    <polygon points="3,15 5,15 5,19 9,19 9,21 3,21"/>
+    <polygon points="19,15 21,15 21,21 15,21 15,19 19,19"/>
+  </g>
+  <!-- Lime brackets with 1px black outline -->
+  <g fill="#cafd00" stroke="#0e0e12" stroke-width="1">
+    <polygon points="1,1 7,1 7,3 3,3 3,7 1,7"/>
+    <polygon points="13,1 19,1 19,7 17,7 17,3 13,3"/>
+    <polygon points="1,13 3,13 3,17 7,17 7,19 1,19"/>
+    <polygon points="13,17 13,19 19,19 19,13 17,13 17,17"/>
+  </g>
+  <!-- Cyan center dot, centered on (10,10) -->
+  <rect x="9" y="9" width="2" height="2" fill="#00ffff"/>
+</svg>

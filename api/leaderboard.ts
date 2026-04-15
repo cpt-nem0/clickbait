@@ -72,14 +72,19 @@ const USERNAME_RE = /^[A-Z0-9_\-. ]+$/;
 const MIN_REACTION_TIME = 80;
 const MAX_SCORE = 500_000;
 const GAME_DURATION_S = 30;
-const DIFFICULTY_MIN_TIMEOUT: Record<string, number> = {
-  easy: 1500, medium: 800, hard: 450, impossible: 300,
+// Minimum practical time per hit per mode (ms): covers reaction + click + spawn gap
+const DIFFICULTY_MIN_INTERVAL: Record<string, number> = {
+  easy: 400,       // linear path — can click mid-travel
+  medium: 400,     // static pop-up
+  hard: 150,       // shrinking — can click quickly for less points
+  impossible: 400, // evasion — hard to chain clicks rapidly
 };
 
 function maxPossibleScore(difficulty: string): number {
-  const minInterval = DIFFICULTY_MIN_TIMEOUT[difficulty];
+  const minInterval = DIFFICULTY_MIN_INTERVAL[difficulty];
   const maxHits = Math.ceil((GAME_DURATION_S * 1000) / minInterval);
-  return maxHits * (100 + 50 * 50);
+  // Small target (200) + max combo bonus
+  return maxHits * (200 + 50 * Math.max(maxHits, 100));
 }
 
 function validateSubmission(body: Record<string, unknown>): string | null {

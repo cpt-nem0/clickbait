@@ -1,7 +1,13 @@
 import { useState, useCallback, useRef, useEffect } from "react";
-import { Difficulty, GameState, GameStats, TargetPosition } from "@/types";
+import { Difficulty, GameState, GameStats, GameTarget } from "@/types";
 import { DIFFICULTIES, GAME_DURATION } from "@/lib/difficulty";
-import { spawnTarget } from "@/lib/target-logic";
+import {
+  calculateScore,
+  createTargetForDifficulty,
+  nextMigrationCycle,
+  updateLinearPosition,
+  updateShrinkingSize,
+} from "@/lib/target-logic";
 import { useTimer } from "./useTimer";
 import { sfx, startMusic, stopMusic } from "@/lib/audio";
 import { createBehaviorTracker } from "@/lib/anticheat";
@@ -19,23 +25,36 @@ export function useGameState(containerSize: { width: number; height: number }) {
   const [gameState, setGameState] = useState<GameState>("idle");
   const [difficulty, setDifficulty] = useState<Difficulty>("easy");
   const [stats, setStats] = useState<GameStats>(initialStats);
-  const [target, setTarget] = useState<TargetPosition | null>(null);
+  const [target, setTarget] = useState<GameTarget | null>(null);
   const [combo, setCombo] = useState(0);
   const [showScorePop, setShowScorePop] = useState<{ x: number; y: number; value: number } | null>(null);
 
-  const targetSpawnTime = useRef(0);
+  const targetRef = useRef<GameTarget | null>(null);
   const despawnTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const aborted = useRef(false);
+  const rafId = useRef<number>(0);
   const behaviorTracker = useRef(createBehaviorTracker());
+  const difficultyRef = useRef<Difficulty>("easy");
+  const containerSizeRef = useRef(containerSize);
+
+  useEffect(() => {
+    containerSizeRef.current = containerSize;
+  }, [containerSize]);
+
+  const updateTarget = useCallback((next: GameTarget | null) => {
+    targetRef.current = next;
+    setTarget(next);
+  }, []);
 
   const endGame = useCallback(() => {
     if (aborted.current) return;
     setGameState("gameOver");
-    setTarget(null);
+    updateTarget(null);
     if (despawnTimer.current) clearTimeout(despawnTimer.current);
+    cancelAnimationFrame(rafId.current);
     stopMusic();
     sfx.gameOver();
-  }, []);
+  }, [updateTarget]);
 
   const { timeLeft, start: startTimer, stop: stopTimer, reset: resetTimer } = useTimer(
     GAME_DURATION,
@@ -46,22 +65,72 @@ export function useGameState(containerSize: { width: number; height: number }) {
     if (aborted.current) return;
     if (despawnTimer.current) clearTimeout(despawnTimer.current);
 
-    const pos = spawnTarget(containerSize.width, containerSize.height);
-    setTarget(pos);
-    targetSpawnTime.current = Date.now();
+    const { width, height } = containerSizeRef.current;
+    const diff = difficultyRef.current;
+    const newTarget = createTargetForDifficulty(diff, width, height);
+    updateTarget(newTarget);
     sfx.spawn();
 
-    const config = DIFFICULTIES[difficulty];
-    despawnTimer.current = setTimeout(() => {
+    const config = DIFFICULTIES[diff];
+    // Only static + evasion use timeouts. Linear/shrinking expire via rAF.
+    if (config.mechanic === "static" || config.mechanic === "evasion") {
+      despawnTimer.current = setTimeout(() => {
+        if (aborted.current) return;
+        setCombo(0);
+        spawnNewTarget();
+      }, config.timeout);
+    }
+  }, [updateTarget]);
+
+  const startAnimationLoop = useCallback(() => {
+    cancelAnimationFrame(rafId.current);
+
+    const tick = () => {
       if (aborted.current) return;
-      setCombo(0);
-      spawnNewTarget();
-    }, config.timeout);
-  }, [containerSize, difficulty]);
+      const current = targetRef.current;
+      if (!current) {
+        rafId.current = requestAnimationFrame(tick);
+        return;
+      }
+
+      const now = performance.now();
+
+      if (current.motion) {
+        const { x, y, phase } = updateLinearPosition(current.motion, now);
+        if (phase === "complete") {
+          // Migration cycle done — start a new one from current end to a new random position
+          const { width, height } = containerSizeRef.current;
+          const newMotion = nextMigrationCycle(current.motion, width, height, current.dimensions);
+          const next = { ...current, x: newMotion.startX, y: newMotion.startY, motion: newMotion };
+          targetRef.current = next;
+          setTarget(next);
+        } else {
+          const next = { ...current, x, y };
+          targetRef.current = next;
+          setTarget(next);
+        }
+      } else if (current.currentSize !== undefined) {
+        const config = DIFFICULTIES[difficultyRef.current];
+        const { size, expired } = updateShrinkingSize(current.spawnTime, now, config.timeout);
+        if (expired) {
+          setCombo(0);
+          spawnNewTarget();
+        } else {
+          const next = { ...current, currentSize: size };
+          targetRef.current = next;
+          setTarget(next);
+        }
+      }
+
+      rafId.current = requestAnimationFrame(tick);
+    };
+    rafId.current = requestAnimationFrame(tick);
+  }, [spawnNewTarget]);
 
   const startGame = useCallback(
     (diff: Difficulty) => {
       aborted.current = false;
+      difficultyRef.current = diff;
       setDifficulty(diff);
       setStats(initialStats);
       setCombo(0);
@@ -71,20 +140,30 @@ export function useGameState(containerSize: { width: number; height: number }) {
       sfx.gameStart();
       startMusic();
 
+      const mechanic = DIFFICULTIES[diff].mechanic;
+      if (mechanic === "linear" || mechanic === "shrinking") {
+        startAnimationLoop();
+      }
+
       setTimeout(() => {
         if (aborted.current) return;
         spawnNewTarget();
       }, 100);
     },
-    [containerSize, startTimer, spawnNewTarget]
+    [startTimer, spawnNewTarget, startAnimationLoop]
   );
 
   const handleTargetClick = useCallback(
     (clickX: number, clickY: number) => {
-      if (gameState !== "playing" || !target) return;
+      if (gameState !== "playing") return;
+      const current = targetRef.current;
+      if (!current) return;
 
-      const reactionTime = Date.now() - targetSpawnTime.current;
-      behaviorTracker.current.trackClick(clickX, clickY, target.x, target.y, reactionTime);
+      const now = performance.now();
+      const reactionTime = now - current.spawnTime;
+      behaviorTracker.current.trackClick(clickX, clickY, current.x, current.y, reactionTime);
+
+      const scoreGain = calculateScore(current, combo, difficultyRef.current, now);
 
       setStats((prev) => {
         const newReactionTimes = [...prev.reactionTimes, reactionTime];
@@ -94,7 +173,7 @@ export function useGameState(containerSize: { width: number; height: number }) {
           newReactionTimes.reduce((a, b) => a + b, 0) / newReactionTimes.length;
 
         return {
-          score: prev.score + 100 + combo * 50,
+          score: prev.score + scoreGain,
           clicks: newClicks,
           hits: newHits,
           reactionTimes: newReactionTimes,
@@ -105,7 +184,7 @@ export function useGameState(containerSize: { width: number; height: number }) {
 
       const newCombo = combo + 1;
       setCombo(newCombo);
-      setShowScorePop({ x: clickX, y: clickY, value: 100 + combo * 50 });
+      setShowScorePop({ x: clickX, y: clickY, value: scoreGain });
       setTimeout(() => setShowScorePop(null), 600);
 
       if (newCombo >= 3) {
@@ -116,7 +195,7 @@ export function useGameState(containerSize: { width: number; height: number }) {
 
       spawnNewTarget();
     },
-    [gameState, target, combo, spawnNewTarget]
+    [gameState, combo, spawnNewTarget]
   );
 
   const handleMiss = useCallback(() => {
@@ -139,15 +218,17 @@ export function useGameState(containerSize: { width: number; height: number }) {
     stopTimer();
     resetTimer();
     setGameState("idle");
-    setTarget(null);
+    updateTarget(null);
     setStats(initialStats);
     setCombo(0);
+    cancelAnimationFrame(rafId.current);
     if (despawnTimer.current) clearTimeout(despawnTimer.current);
-  }, [stopTimer, resetTimer]);
+  }, [stopTimer, resetTimer, updateTarget]);
 
   useEffect(() => {
     return () => {
       aborted.current = true;
+      cancelAnimationFrame(rafId.current);
       if (despawnTimer.current) {
         clearTimeout(despawnTimer.current);
         despawnTimer.current = null;
@@ -168,7 +249,7 @@ export function useGameState(containerSize: { width: number; height: number }) {
     handleTargetClick,
     handleMiss,
     resetGame,
-    setTarget,
+    setTarget: updateTarget,
     trackMouseMove: () => behaviorTracker.current.trackMouseMove(),
     getBehaviorSignals: () => behaviorTracker.current.getSignals(),
   };

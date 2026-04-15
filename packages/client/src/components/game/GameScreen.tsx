@@ -19,7 +19,7 @@ interface GameScreenProps {
   onBack: () => void;
 }
 
-export default function GameScreen({ difficulty, highScore, skin, onGameOver, onBack }: GameScreenProps) {
+export default function GameScreen({ difficulty, highScore, skin, onGameOver }: GameScreenProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerSize, setContainerSize] = useState({ width: 800, height: 500 });
   const mousePos = useMousePosition(containerRef);
@@ -84,9 +84,10 @@ export default function GameScreen({ difficulty, highScore, skin, onGameOver, on
         mousePos.x,
         mousePos.y,
         containerSize.width,
-        containerSize.height
+        containerSize.height,
+        target.dimensions
       );
-      setTarget(newPos);
+      setTarget({ ...target, x: newPos.x, y: newPos.y });
       sfx.dodge();
     }
   }, [mousePos, target, difficulty, gameState, containerSize, setTarget]);
@@ -131,15 +132,13 @@ export default function GameScreen({ difficulty, highScore, skin, onGameOver, on
         ref={containerRef}
         onClick={onContainerClick}
         onMouseMove={trackMouseMove}
-        className="flex-1 relative bg-surface overflow-hidden cursor-crosshair select-none"
+        className="flex-1 relative bg-surface overflow-hidden game-cursor select-none"
       >
         <div className="noise-overlay" style={{ position: "absolute" }} />
 
         {target && (
           <Target
-            x={target.x}
-            y={target.y}
-            difficulty={difficulty}
+            target={target}
             skin={skin}
             onClick={onTargetClick}
           />

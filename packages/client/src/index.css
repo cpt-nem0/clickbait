@@ -382,6 +382,20 @@
     box-shadow: 2px 2px 0px 0px #000000;
     z-index: 10;
   }
+
+  .game-cursor {
+    cursor: url('/cursor-game.svg') 10 10, crosshair;
+  }
+
+  .game-cursor:active {
+    cursor: url('/cursor-game-pressed.svg') 10 10, crosshair;
+  }
+
+  .game-cursor a,
+  .game-cursor button,
+  .game-cursor [role="button"] {
+    cursor: inherit;
+  }
 }
 
 @keyframes glitch-x {
@@ -461,6 +475,49 @@
     inset: 15px;
     opacity: 0.15;
   }
+}
+
+/* Difficulty card previews */
+.preview-linear-slide {
+  animation: preview-linear 2s ease-in-out infinite;
+}
+@keyframes preview-linear {
+  0% { transform: translate(-50px, 20px); }
+  100% { transform: translate(50px, -20px); }
+}
+
+.preview-static-popup {
+  animation: preview-popup 1.5s ease-in-out infinite;
+}
+@keyframes preview-popup {
+  0%, 100% { transform: translate(-40px, -20px) scale(1); opacity: 1; }
+  25% { transform: translate(-40px, -20px) scale(0); opacity: 0; }
+  26% { transform: translate(40px, 15px) scale(0); opacity: 0; }
+  50% { transform: translate(40px, 15px) scale(1); opacity: 1; }
+  75% { transform: translate(40px, 15px) scale(0); opacity: 0; }
+  76% { transform: translate(-20px, 20px) scale(0); opacity: 0; }
+  99% { transform: translate(-20px, 20px) scale(1); opacity: 1; }
+}
+
+.preview-shrinking {
+  width: 48px;
+  height: 48px;
+  animation: preview-shrink 1.2s ease-in-out infinite;
+}
+@keyframes preview-shrink {
+  0%, 100% { transform: scale(1); }
+  90% { transform: scale(0.3); }
+}
+
+.preview-evading {
+  animation: preview-evade 1.5s ease-in-out infinite;
+}
+@keyframes preview-evade {
+  0%, 100% { transform: translate(-30px, -15px); }
+  20% { transform: translate(30px, -15px); }
+  40% { transform: translate(30px, 15px); }
+  60% { transform: translate(-30px, 15px); }
+  80% { transform: translate(0, 0); }
 }
 
 /* Chrome: metallic gradient shift */
