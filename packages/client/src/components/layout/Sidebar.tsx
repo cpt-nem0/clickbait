@@ -17,9 +17,6 @@ export default function Sidebar({ username, highScore, currentView, onNavigate }
         <div className="bg-surface-container-high p-3">
           <p className="font-display text-xs text-on-surface-variant uppercase">PLAYER_1</p>
           <p className="font-display text-sm font-bold text-primary truncate">{username || "ANON_USER"}</p>
-          <p className="font-body text-xs text-on-surface-variant mt-1">
-            HIGH: <span className="text-primary-container font-bold">{highScore.toLocaleString()}</span>
-          </p>
         </div>
       </div>
 
